@@ -22,14 +22,15 @@ namespace Asana
                 Console.WriteLine("2. List all projects.");
                 Console.WriteLine("3. List all ToDos in a project.");
                 Console.WriteLine("4. Delete a project.");
-                Console.WriteLine("5. Create a ToDo.");
-                Console.WriteLine("6. List all ToDos.");
-                Console.WriteLine("7. List all outstanding ToDos.");
-                Console.WriteLine("8. Delete a ToDo.");
-                Console.WriteLine("9. Update a ToDo.");
-                Console.WriteLine("10. Exit.");
+                Console.WriteLine("5. Update a project.");
+                Console.WriteLine("6. Create a ToDo.");
+                Console.WriteLine("7. List all ToDos.");
+                Console.WriteLine("8. List all outstanding ToDos.");
+                Console.WriteLine("9. Delete a ToDo.");
+                Console.WriteLine("10. Update a ToDo.");
+                Console.WriteLine("11. Exit.");
 
-                var choice = Console.ReadLine() ?? "10";
+                var choice = Console.ReadLine() ?? "11";
 
                 if (int.TryParse(choice, out choiceInt))
                 {
@@ -102,6 +103,30 @@ namespace Asana
                             }
                             break;
                         case 5:
+                             // Update a Project
+                            Console.WriteLine("Projects:");
+                            foreach (var p in projects)
+                                Console.WriteLine($"[{p.Id}] {p.Name}");
+
+                            Console.Write("Enter Project ID to update: ");
+                            int projToUpdate = int.Parse(Console.ReadLine() ?? "0");
+                            var projRef = projects.FirstOrDefault(p => p.Id == projToUpdate);
+
+                            if (projRef != null)
+                            {
+                                Console.Write("New Name: ");
+                                projRef.Name = Console.ReadLine();
+                                Console.Write("New Description: ");
+                                projRef.Description = Console.ReadLine();
+                                Console.WriteLine("Project updated.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Project not found.");
+                            }
+                            break;
+
+                        case 6:
                             // Create ToDo
                             Console.Write("ToDo Name: ");
                             string name = Console.ReadLine();
@@ -127,15 +152,15 @@ namespace Asana
                                 ProjectId = projId
                             });
                             break;
-                        case 6:
+                        case 7:
                             toDos.ForEach(Console.WriteLine);
                             break;
-                        case 7:
+                        case 8:
                             toDos.Where(t => (t != null) && !(t?.IsCompleted ?? false))
                                 .ToList()
                                 .ForEach(Console.WriteLine);
                             break;
-                        case 8:
+                        case 9:
                             toDos.ForEach(Console.WriteLine);
                             Console.Write("ToDo to Delete: ");
                             toDoChoice = int.Parse(Console.ReadLine() ?? "0");
@@ -147,7 +172,7 @@ namespace Asana
                              }
 
                                 break;
-                        case 9:
+                        case 10:
                             toDos.ForEach(Console.WriteLine);
                             Console.Write("ToDo to Update: ");
                             toDoChoice = int.Parse(Console.ReadLine() ?? "0");
@@ -177,7 +202,7 @@ namespace Asana
 
                             }
                             break;
-                        case 10:
+                        case 11:
                             break;
                         default:
                             Console.WriteLine("ERROR: Unknown menu selection");
@@ -189,7 +214,7 @@ namespace Asana
                     Console.WriteLine($"ERROR: {choice} is not a valid menu selection");
                 }
 
-            } while (choiceInt != 10);
+            } while (choiceInt != 11);
 
         }
     }
