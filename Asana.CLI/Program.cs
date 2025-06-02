@@ -28,9 +28,10 @@ namespace Asana
                 Console.WriteLine("8. List all outstanding ToDos.");
                 Console.WriteLine("9. Delete a ToDo.");
                 Console.WriteLine("10. Update a ToDo.");
-                Console.WriteLine("11. Exit.");
+                Console.WriteLine("11. Reassign an unassigned ToDo.");
+                Console.WriteLine("12. Exit.");
 
-                var choice = Console.ReadLine() ?? "11";
+                var choice = Console.ReadLine() ?? "12";
 
                 if (int.TryParse(choice, out choiceInt))
                 {
@@ -203,6 +204,69 @@ namespace Asana
                             }
                             break;
                         case 11:
+                            var unassignedToDos = toDos.Where(t => t.ProjectId == 0).ToList();
+
+                            if (unassignedToDos.Count == 0)
+                            {
+                                Console.WriteLine("No unassigned ToDos.");
+                                break;
+                            }
+
+                            Console.WriteLine("Unassigned ToDos:");
+                            foreach (var t in unassignedToDos)
+                                Console.WriteLine($"[{t.Id}] {t.Name} - {t.Description}");
+
+                            Console.Write("Enter ID of the ToDo to reassign: ");
+                            int reassignId = int.Parse(Console.ReadLine() ?? "0");
+
+                            var toReassign = unassignedToDos.FirstOrDefault(t => t.Id == reassignId);
+                            if (toReassign == null)
+                            {
+                                Console.WriteLine("Invalid ToDo ID.");
+                                break;
+                            }
+
+                            Console.WriteLine("Available Projects:");
+                            foreach (var p in projects)
+                                Console.WriteLine($"[{p.Id}] {p.Name}");
+
+                            Console.Write("Enter Project ID to assign to, or 0 to create a new one: ");
+                            int targetProjId = int.Parse(Console.ReadLine() ?? "0");
+
+                            if (targetProjId == 0)
+                            {
+                                Console.Write("New Project Name: ");
+                                string newProjName = Console.ReadLine();
+                                Console.Write("New Project Description: ");
+                                string newProjDesc = Console.ReadLine();
+
+                                var newProject = new Project
+                                {
+                                    Id = ++projectId,
+                                    Name = newProjName,
+                                    Description = newProjDesc
+                                };
+
+                                projects.Add(newProject);
+                                toReassign.ProjectId = newProject.Id;
+                                Console.WriteLine($"ToDo reassigned to new project: {newProjName}");
+                            }
+                            else
+                            {
+                                var targetProject = projects.FirstOrDefault(p => p.Id == targetProjId);
+                                if (targetProject != null)
+                                {
+                                    toReassign.ProjectId = targetProjId;
+                                    Console.WriteLine("ToDo reassigned successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Project not found. ToDo not reassigned.");
+                                }
+                            }
+                            break;
+
+                        case 12:
                             break;
                         default:
                             Console.WriteLine("ERROR: Unknown menu selection");
@@ -214,7 +278,7 @@ namespace Asana
                     Console.WriteLine($"ERROR: {choice} is not a valid menu selection");
                 }
 
-            } while (choiceInt != 11);
+            } while (choiceInt != 12);
 
         }
     }
