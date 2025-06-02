@@ -6,6 +6,15 @@ using System.Threading.Tasks;
 
 namespace Asana.Library.Models
 {
+    public class Project
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public double? CompletePercent { get; set; }
+        public List<ToDo> ToDos { get; set; } = new List<ToDo>();
+    }
+
     public class ToDo
     {
         public string? Name { get; set; }
@@ -13,6 +22,7 @@ namespace Asana.Library.Models
         public int? Priority { get; set; }
         public bool? IsCompleted { get; set; }
 
+        public int ProjectId { get; set; }
         public int Id { get; set; }
 
         public override string ToString()
