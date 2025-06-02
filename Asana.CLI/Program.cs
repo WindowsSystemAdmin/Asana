@@ -20,15 +20,16 @@ namespace Asana
                 Console.WriteLine("Choose a menu option:");
                 Console.WriteLine("1. Create a project.");
                 Console.WriteLine("2. List all projects.");
-                Console.WriteLine("3. List all ToDos in a Project");
-                Console.WriteLine("4. Create a ToDo");
-                Console.WriteLine("5. List all ToDos");
-                Console.WriteLine("6. List all outstanding ToDos");
-                Console.WriteLine("7. Delete a ToDo");
-                Console.WriteLine("8. Update a ToDo");
-                Console.WriteLine("9. Exit");
+                Console.WriteLine("3. List all ToDos in a project.");
+                Console.WriteLine("4. Delete a project.");
+                Console.WriteLine("5. Create a ToDo.");
+                Console.WriteLine("6. List all ToDos.");
+                Console.WriteLine("7. List all outstanding ToDos.");
+                Console.WriteLine("8. Delete a ToDo.");
+                Console.WriteLine("9. Update a ToDo.");
+                Console.WriteLine("10. Exit.");
 
-                var choice = Console.ReadLine() ?? "9";
+                var choice = Console.ReadLine() ?? "10";
 
                 if (int.TryParse(choice, out choiceInt))
                 {
@@ -77,6 +78,30 @@ namespace Asana
                                 Console.WriteLine($"{t.Id}: {t.Name} - {t.Description} (Priority {t.Priority})");
                             break;
                         case 4:
+                            Console.WriteLine("Projects:");
+                            foreach (var p in projects)
+                                Console.WriteLine($"[{p.Id}] {p.Name}");
+
+                            Console.Write("Enter Project ID to delete: ");
+                            int delProjId = int.Parse(Console.ReadLine() ?? "0");
+
+                            var projectToDelete = projects.FirstOrDefault(p => p.Id == delProjId);
+
+                            if (projectToDelete != null)
+                            {
+                                // Unassign all ToDos that belong to this project
+                                foreach (var todo in toDos.Where(t => t.ProjectId == delProjId))
+                                    todo.ProjectId = 0; // or -1 to signify "Unassigned"
+
+                                projects.Remove(projectToDelete);
+                                Console.WriteLine("Project deleted. All ToDos have been unassigned.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Project not found.");
+                            }
+                            break;
+                        case 5:
                             // Create ToDo
                             Console.Write("ToDo Name: ");
                             string name = Console.ReadLine();
@@ -102,15 +127,15 @@ namespace Asana
                                 ProjectId = projId
                             });
                             break;
-                        case 5:
+                        case 6:
                             toDos.ForEach(Console.WriteLine);
                             break;
-                        case 6:
+                        case 7:
                             toDos.Where(t => (t != null) && !(t?.IsCompleted ?? false))
                                 .ToList()
                                 .ForEach(Console.WriteLine);
                             break;
-                        case 7:
+                        case 8:
                             toDos.ForEach(Console.WriteLine);
                             Console.Write("ToDo to Delete: ");
                             toDoChoice = int.Parse(Console.ReadLine() ?? "0");
@@ -122,7 +147,7 @@ namespace Asana
                              }
 
                                 break;
-                        case 8:
+                        case 9:
                             toDos.ForEach(Console.WriteLine);
                             Console.Write("ToDo to Update: ");
                             toDoChoice = int.Parse(Console.ReadLine() ?? "0");
@@ -152,7 +177,7 @@ namespace Asana
 
                             }
                             break;
-                        case 9:
+                        case 10:
                             break;
                         default:
                             Console.WriteLine("ERROR: Unknown menu selection");
@@ -164,7 +189,7 @@ namespace Asana
                     Console.WriteLine($"ERROR: {choice} is not a valid menu selection");
                 }
 
-            } while (choiceInt != 9);
+            } while (choiceInt != 10);
 
         }
     }
