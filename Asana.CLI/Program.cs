@@ -48,9 +48,24 @@ namespace Asana
                             });
                             break;
                         case 2:
-                            // List all Projects
                             foreach (var p in projects)
-                                Console.WriteLine($"{p.Id}: {p.Name} - {p.Description}");
+                            {
+                                // Recalculate CompletePercent
+                                var todosInProject2 = toDos.Where(t => t.ProjectId == p.Id).ToList();
+
+                                if (todosInProject2.Count == 0)
+                                {
+                                    p.CompletePercent = 0;
+                                }
+                                else
+                                {
+                                    int completedCount = todosInProject2.Count(t => t.IsCompleted == true);
+                                    p.CompletePercent = (completedCount * 100.0) / todosInProject2.Count;
+                                }
+
+                                // Display project with completion %
+                                Console.WriteLine($"[{p.Id}] {p.Name} - {p.Description} | Complete: {p.CompletePercent:F1}%");
+                            }
                             break;
                         case 3:
                             // List ToDos in a given Project
@@ -119,6 +134,22 @@ namespace Asana
                                 updateReference.Name = Console.ReadLine();
                                 Console.Write("Description:");
                                 updateReference.Description = Console.ReadLine();
+                                Console.Write("Priority (1-5): ");
+                                if (int.TryParse(Console.ReadLine(), out int parsedPriority))
+                                    updateReference.Priority = parsedPriority;
+                                else
+                                    Console.WriteLine("Invalid priority. Keeping existing value.");
+
+                                Console.Write("Mark as complete? (y/n): ");
+                                string? input = Console.ReadLine()?.Trim().ToLower();
+
+                                if (input == "y")
+                                    updateReference.IsCompleted = true;
+                                else if (input == "n")
+                                    updateReference.IsCompleted = false;
+                                else
+                                    Console.WriteLine("Invalid input. Leaving IsCompleted unchanged.");
+
                             }
                             break;
                         case 9:
