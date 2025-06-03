@@ -9,7 +9,6 @@ namespace Asana
         {
             var toDos = new List<ToDo>();
             int choiceInt;
-            var itemCount = 0;
             var toDoChoice = 0;
             var projects = new List<Project>();
             int toDoId = 0;
@@ -40,9 +39,9 @@ namespace Asana
                         case 1:
                             // Create Project
                             Console.Write("Project Name: ");
-                            string projName = Console.ReadLine();
+                            string projName = Console.ReadLine() ?? "";
                             Console.Write("Project Description: ");
-                            string projDesc = Console.ReadLine();
+                            string projDesc = Console.ReadLine() ?? "";
                             projects.Add(new Project
                             {
                                 Id = ++projectId,
@@ -130,9 +129,9 @@ namespace Asana
                         case 6:
                             // Create ToDo
                             Console.Write("ToDo Name: ");
-                            string name = Console.ReadLine();
+                            string name = Console.ReadLine() ?? "";
                             Console.Write("Description: ");
-                            string desc = Console.ReadLine();
+                            string desc = Console.ReadLine() ?? "";
                             Console.Write("Priority (1-5): ");
                             int priority = int.Parse(Console.ReadLine() ?? "3");
 
@@ -236,9 +235,9 @@ namespace Asana
                             if (targetProjId == 0)
                             {
                                 Console.Write("New Project Name: ");
-                                string newProjName = Console.ReadLine();
+                                string newProjName = Console.ReadLine() ?? "";
                                 Console.Write("New Project Description: ");
-                                string newProjDesc = Console.ReadLine();
+                                string newProjDesc = Console.ReadLine() ?? "";
 
                                 var newProject = new Project
                                 {
